@@ -22,11 +22,6 @@ Route::get('/', function () {
     echo 'Welcome to our API';
 });
 
-Route::get('/test', function () {
-return Response::json(array('name' => 'Steve', 'state' => 'CA'));
-});
-
-
 
 Route::middleware('throttle:30,1')->get('/listEvoplay',function() {
 $Games = DB::table('gamelist')->get();
@@ -76,11 +71,9 @@ $api->version('v1', ['middleware' => ['api']], function (Router $api) {
 
     /*
      * Authenticated routes
-     */
     $api->group(['middleware' => ['api.auth']], function (Router $api) {
         /*
          * Authentication
-         */
         $api->group(['prefix' => 'auth'], function (Router $api) {
             $api->group(['prefix' => 'jwt'], function (Router $api) {
                 $api->get('/refresh', 'App\Http\Controllers\Auth\AuthController@refresh');
@@ -92,7 +85,6 @@ $api->version('v1', ['middleware' => ['api']], function (Router $api) {
 
         /*
          * Users
-         */
         $api->group(['prefix' => 'users', 'middleware' => 'check_role:admin'], function (Router $api) {
             $api->get('/', 'App\Http\Controllers\UserController@getAll');
             $api->get('/{uuid}', 'App\Http\Controllers\UserController@get');
@@ -104,9 +96,9 @@ $api->version('v1', ['middleware' => ['api']], function (Router $api) {
 
         /*
          * Roles
-         */
         $api->group(['prefix' => 'roles'], function (Router $api) {
             $api->get('/', 'App\Http\Controllers\RoleController@getAll');
         });
-    });
+    });         */
+
 });

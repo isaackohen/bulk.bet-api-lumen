@@ -256,15 +256,21 @@ class EvoplayController extends Controller
         curl_close($curlcatalog);
         $responsecurl = json_decode($responsecurl, true);
         if($responsecurl['result']['balance']) {
-                /*
                 try {
-                $OperatorTransactions = OperatorTransactions::create(['operator' => $getoperator,'id' => $findoperator->id,'playerid' => $playerId, 'currency' => $currency, 'bet' => $rounding, 'win' => '0', 'gameid' => $gamedata, 'transactionid' => $roundid, 'callback_state' => '0', 'type' => 'slots', 'callback_tries' => '0', 'rawdata' => '0'
-                ]);
+                    if($rounding > 0) {
+                $OperatorTransactions = \App\Models\Gametransactions::create(['casinoid' => $findoperator->id, 'currency' => 'USD', 'player' => $playerId, 'ownedBy' => $findoperator->ownedBy, 'bet' => $rounding, 'win' => '0', 'gameid' => $gamedata, 'txid' => $roundid, 'type' => 'slots', 'rawdata' => '[]']);
+                        $profitCycle = $findoperator->profitCycle;
+                        $profitToday = $findoperator->profitToday;
+                        $newcycle = floatval($newcycle + round($rounding / 100, 2));
+                        $newToday = floatval($newToday + round($rounding / 100, 2));
+                        \App\Models\Gameoptions::where('id', $getoperator)->update([
+                            'profitCycle' => $newcycle, 'profitToday' => $newToday
+                        ]);
+                    }       
 
                 } catch (\Exception $exception) {
                     //Error trying to create operator transaction
                 }
-                */
             return response()->json([
                 'status' => 'ok',
                 'data' => ([
@@ -320,11 +326,23 @@ class EvoplayController extends Controller
             $prefix = $findoperator->slots_prefix;
             $rounding = $amount * 100;
             $rounding = (int)$rounding;
-            /* try{
-            $OperatorTransactions = OperatorTransactions::where('transactionid', $roundid)->update(['win' => $rounding, 'callback_state' => 1]);
-            } catch (\Exception $exception) {
+             try{
+                                    if($rounding > 0) {
+
+                $OperatorTransactions = \App\Models\Gametransactions::create(['casinoid' => $findoperator->id, 'currency' => 'USD', 'player' => $playerId, 'ownedBy' => $findoperator->ownedBy, 'bet' => '0', 'win' => $rounding, 'gameid' => $gamedata, 'txid' => $roundid, 'type' => 'slots', 'rawdata' => '[]']);
+            $profitCycle = $findoperator->profitCycle;
+            $profitToday = $findoperator->profitToday;
+            $newcycle = floatval($newcycle + round($rounding / 100, 2));
+            $newToday = floatval($newToday + round($rounding / 100, 2));
+            \App\Models\Gameoptions::where('id', $getoperator)->update([
+                'profitCycle' => $newcycle, 'profitToday' => $newToday
+            ]);
+
+}
+
+                        } catch (\Exception $exception) {
                 //Error trying to create operator transaction
-            }*/
+            }
             $url = $baseurl.$prefix.'/bet?currency='.$currency.'&gameid='.$gamedata.'&roundid='.$roundid.'&playerid='.$playerId.'&bet=0&win='.$rounding.'&bonusmode='.$decodeddetails->game_mode_code.'&final='.$finalaction;
             $userdata = array('playerId' => $playerId, "currency" => $currency);
             $jsonbody = json_encode($userdata);
