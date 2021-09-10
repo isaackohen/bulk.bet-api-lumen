@@ -95,7 +95,13 @@ class SessionController extends Controller
 
                 /** @param create Regular Session on C2 Gaming */
                     if($gameid->api_ext === "c2"  and $gameid->type === "slots") {
-                        $url = 'https://rpc.bet/session/'.$mode.'/c2/'.$userid.'/'.$get_gameid.'/'.$get_casinoid.'/'.$findoperator->bankgroup.'/'.$findoperator->statichost.'/';
+                        if($mode === 'demo') {
+                        $url = 'https://api.bulk.bet/session/'.$mode.'/c2/'.$get_gameid;
+
+                        } else {
+                        $url = 'https://api.bulk.bet/session/'.$mode.'/c2/'.$userid.'/'.$get_gameid.'/'.$get_casinoid.'/'.$findoperator->bankgroup.'/'.$findoperator->statichost.'/';
+                        }
+
                         $response = Http::get($url);
                         $return = $response['url'];
 
